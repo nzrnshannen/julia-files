@@ -3,10 +3,10 @@ Created by: Shannen T. Nazareno
 Date: 12/27/2023
 
 Notes:
-1. Will add yr and dept for studRec
+1. Will add yr and dept for studRec /
 2. + functions: filterByYrLvl, filterByDept, sortByYrLvl
-3. + : enum for departments (DCISM = 1, etc)
-4. + : before adding a student, check if course is present in the department
+3. + : enum for departments (DCISM = 1, etc) /
+4. + : before adding a student, check if course is present in the  /
 5. Menu [add, delete(w/ clearStudRec option), search(w/ filter), sort, checkAvailability(isPresent())]
 
 
@@ -20,14 +20,22 @@ clearStudRec == clear a section (probably or given year lvl)
 #include<stdbool.h>
 #include<string.h>
 
-#define SIZE 20
+#define SIZE 40
 #define NULL_VAL -9999999
+
+typedef enum{
+    DCISM = 1,
+    DCLL,
+    DEEE
+}Department;
 
 typedef struct{
     int id;
     char fName[SIZE], lName[SIZE];
     char mid_init;
     char course[SIZE];
+    Department dept;
+    int yrLvl;
 }studRec;
 
 typedef struct node{
@@ -41,6 +49,7 @@ void printRecords(LIST L);
 
 bool isEmpty(LIST L);
 bool isPresent(LIST L, int id);
+bool authenticateCourse(Department dept, char *course);
 
 void emptyListMsg();
 void noExistingRecMsg();
@@ -50,15 +59,52 @@ studRec searchStud(LIST L, int id);
 void filterByFname(LIST L, char *f_name);
 void filterByLname(LIST L, char *l_name);
 void filterByCourse(LIST L, char *course);
-//isPresent /
-//searchStud /
-//filterByFName /
-//filterByLName /
-//filterByCourse /
+
+char* printDeptName(Department dept);
+
+bool authenticateCourse(Department dept, char *course)
+{
+    switch(dept)
+    {
+        case DCISM: 
+            return ((strcmp(course, "Information Systems")==0) 
+            || (strcmp(course, "Information Technology") == 0)
+            || (strcmp(course, "Compupter Science")==0)) 
+            ? true : false;
+        break;
+        case DCLL:
+            return ((strcmp(course, "Applied Linguistics")==0) 
+            || (strcmp(course, "Literature") == 0) 
+            || (strcmp(course, "English Language Studies")==0)) 
+            ? true : false;
+        break;
+        case DEEE: 
+            return ((strcmp(course, "Electrical Engineering")==0)
+            || (strcmp(course, "Electronics Engineering")==0)) 
+            ? true : false; 
+        break;
+
+        default: return false; break;
+    }
+}   
+
+
+char* printDeptName(Department dept)
+{
+    switch(dept)
+    {
+        case DCISM: return ("DCISM"); break;
+        case DCLL: return ("DCLL"); break;
+        case DEEE: return ("DEEE"); break;
+
+        default: return ("\n\t> Unknown Department < \n\n"); break;
+    }
+}
+
 //sortByID
 //sortByFName
 //sortByLName
-//deleteStudent(id) /
+
 //clearStudRec
 
 bool isEmpty(LIST L)
@@ -76,7 +122,7 @@ bool isPresent(LIST L, int id)
 
 studRec searchStud(LIST L, int id)
 {
-    studRec null_stud = {NULL_VAL, "XXXXX", "XXXXX", 'X', "XXXXX"};
+    studRec null_stud = {NULL_VAL, "XXXXX", "XXXXX", 'X', "XXXXX", NULL_VAL, NULL_VAL};
     LIST check;
     for(check=L; check!=NULL && check->Stud.id!=id; check=check->next_rec){}
 
@@ -100,28 +146,36 @@ void initList(LIST *L)
 
 void insertUnique(LIST *L, studRec S)
 {
-    LIST check = *L;
-    for(check = *L; check!=NULL&&check->Stud.id!=S.id; check=check->next_rec){}
-    
-    if(check==NULL)
+    if(authenticateCourse(S.dept, S.course))
     {
-        LIST newStud = (LIST)malloc(sizeof(studType));
-        if(newStud==NULL)
+        LIST check = *L;
+        for(check = *L; check!=NULL&&check->Stud.id!=S.id; check=check->next_rec){}
+        
+        if(check==NULL)
         {
-            printf("\nMemory allocation failure!");
-            exit(1);
+            LIST newStud = (LIST)malloc(sizeof(studType));
+            if(newStud==NULL)
+            {
+                printf("\nMemory allocation failure!");
+                exit(1);
+            }
+
+            newStud->Stud = S;
+            newStud->next_rec = *L;
+            *L = newStud;
+
+            printf("\n\tSuccessfully added student [%d]\n\n", S.id);
         }
-
-        newStud->Stud = S;
-        newStud->next_rec = *L;
-        *L = newStud;
-
-        printf("\n\tSuccessfully added student [%d]\n\n", S.id);
+        else
+        {
+            printf("\n\tStudent record already exists!\n\n");
+        }
     }
     else
     {
-        printf("\n\tStudent record already exists!\n\n");
+        printf("\n\tInvalid Course!\n");
     }
+    
     
 }
 
@@ -142,7 +196,9 @@ void printRecords(LIST L)
             printf("\tSTUDENT %d\n\n", ctr++);
             printf("ID: %d\n", trav->Stud.id);
             printf("Name: %s %c. %s\n", trav->Stud.fName, trav->Stud.mid_init, trav->Stud.lName);
-            printf("Course: %s\n\n", trav->Stud.course);
+            printf("Course: %s\n", trav->Stud.course);
+            printf("Department: %s\n", printDeptName(trav->Stud.dept));
+            printf("Year: %d\n\n", trav->Stud.yrLvl);
         }
     }
 }
@@ -205,12 +261,12 @@ void filterByFname(LIST L, char *f_name)
         else
         {
             LIST trav;
-            printf("%-12s | %-12s | %-15s | %-15s | %s\n", "ID", "FIRST NAME", "LAST NAME", "M.I", "COURSE");
+            printf("%-12s | %-12s | %-15s | %-15s | %-15s | %-15s | %-5s \n", "ID", "FIRST NAME", "LAST NAME", "M.I", "COURSE", "DEPARTMENT", "YEAR");
             for(trav=L; trav!=NULL; trav=trav->next_rec)
             {
                 if(strcmp(trav->Stud.fName, f_name)==0)
                 {
-                    printf("%-15d %-15s %-15s %-17c %s\n", trav->Stud.id, trav->Stud.fName, trav->Stud.lName, trav->Stud.mid_init, trav->Stud.course);
+                    printf("%-15d %-15s %-15s %-17c %-15s %-15s %d\n", trav->Stud.id, trav->Stud.fName, trav->Stud.lName, trav->Stud.mid_init, trav->Stud.course, printDeptName(trav->Stud.dept), trav->Stud.yrLvl);
                 }
             }
             printf("\n=================\n\n");
@@ -237,12 +293,12 @@ void filterByLname(LIST L, char *l_name)
         else
         {
             LIST trav;
-            printf("%-12s | %-12s | %-15s | %-15s | %s\n", "ID", "FIRST NAME", "LAST NAME", "M.I", "COURSE");
+            printf("%-12s | %-12s | %-15s | %-15s | %-15s | %-15s | %-15s\n", "ID", "FIRST NAME", "LAST NAME", "M.I", "COURSE", "DEPARTMENT", "YEAR");
             for(trav=L; trav!=NULL; trav=trav->next_rec)
             {
                 if(strcmp(trav->Stud.lName, l_name)==0)
                 {
-                    printf("%-15d %-15s %-15s %-17c %s\n", trav->Stud.id, trav->Stud.fName, trav->Stud.lName, trav->Stud.mid_init, trav->Stud.course);
+                    printf("%-15d %-15s %-15s %-17c %-15s %-15s %d\n", trav->Stud.id, trav->Stud.fName, trav->Stud.lName, trav->Stud.mid_init, trav->Stud.course, printDeptName(trav->Stud.dept), trav->Stud.yrLvl);
                 }
             }
             printf("\n=================\n\n");
@@ -270,12 +326,12 @@ void filterByCourse(LIST L, char *course)
         else
         {
             LIST trav;
-            printf("%-12s | %-12s | %-15s | %-15s | %s\n", "ID", "FIRST NAME", "LAST NAME", "M.I", "COURSE");
+            printf("%-12s | %-12s | %-15s | %-15s | %-15s | %-5s | %-15s  \n", "ID", "FIRST NAME", "LAST NAME", "M.I", "COURSE", "DEPARTMENT", "YEAR");
             for(trav=L; trav!=NULL; trav=trav->next_rec)
             {
                 if(strcmp(trav->Stud.course, course)==0)
                 {
-                    printf("%-15d %-15s %-15s %-17c %s\n", trav->Stud.id, trav->Stud.fName, trav->Stud.lName, trav->Stud.mid_init, trav->Stud.course);
+                    printf("%-15d %-15s %-15s %-17c %-15s %-15s %-5d\n", trav->Stud.id, trav->Stud.fName, trav->Stud.lName, trav->Stud.mid_init, trav->Stud.course, printDeptName(trav->Stud.dept), trav->Stud.yrLvl);
                 }
             }
             printf("\n=================\n\n");
@@ -286,15 +342,16 @@ void filterByCourse(LIST L, char *course)
 int main()
 {
     LIST section_A;
-    studRec stud1 = {19103991, "Shannen", "Nazareno", 'T', "Information Systems"}; 
-    studRec stud2 = {9999, "Clint", "Englis", 'C', "Information Systems"};
-    studRec stud3 = {9234, "Shannen", "Englis", 'C', "Information Systems"};
-
+    studRec stud1 = {19103991, "Shannen", "Nazareno", 'T', "Information Systems", DCISM, 3}; 
+    studRec stud2 = {9999, "Clint", "Englis", 'C', "Information Systems", DCISM, 3};
+    studRec stud3 = {9234, "Shannen", "Englis", 'C', "Information Systems", DCISM, 3};
+    studRec stud4 = {1351, "test1", "test1", 'A', "Electrical Engineering", DEEE, 1};
     initList(&section_A);
 
     insertUnique(&section_A, stud1);
     insertUnique(&section_A, stud2);
     insertUnique(&section_A, stud3);
+    insertUnique(&section_A, stud4);
 
     printRecords(section_A);
 
@@ -305,6 +362,7 @@ int main()
     // studRec testRetrieve = searchStud(section_A, 1910399);
 
     filterByCourse(section_A, "Information Systems");
-
+    filterByCourse(section_A, "Electrical Engineering");
+    filterByLname(section_A, "test1");
     return 0;
 }
