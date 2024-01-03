@@ -4,8 +4,8 @@ Name: Shannen T. Nazareno
 Date: 01/03/2024
 Program: ADT List using Array Implementation version 2 to make students records for a class
 Functions to be added: filter()
-- by sex
-- by account status (active, inactive)
+- by sex /
+- by account status (active, inactive) /
 ===========================================================================================*/
 
 #include<stdio.h>
@@ -81,6 +81,9 @@ bool studentCheck(Class C, int id);
 char* printSex(Sex z);
 char* printAccStatus(Status accStat);
 void populate(Class C);
+
+void filterBySex(Class C, Sex z);
+void filterByAccStatus(Class C, Status accStat);
 
 char* printAccStatus(Status accStat)
 {
@@ -201,6 +204,65 @@ void removeStudent(Class C, int id)
     }
 }
 
+void filterBySex(Class C, Sex z)
+{
+    if(isEmptyClass(C))
+    {
+        emptyClassListMsg();
+    }
+    else
+    {
+        bool isTrue = false;
+        printf("\n***\nFilter by sex: %s\n", printSex(z));
+        printf("-----------------------------------------------------------------------------------------------------------------------------------\n");
+        printf("%-15s %-12s %-12s %-5s %-7s %-15s %-15s %-25s %-10s %-15s\n\n", "ID", "LASTNAME", "FIRSTNAME", "M.I.", "AGE", "SEX", "DATE OF BIRTH", "EMAIL", "PASSWORD", "STATUS");
+        int x;
+        for(x=0; x<C->studCount; x++)
+        {
+            if(C->stud[x].z==z)
+            {
+                isTrue = true;
+                printf("%-15d %-12s %-12s %-5c %-7d %-15s %d/%d/%-10d %-25s %-10s %-15s\n", C->stud[x].ID, C->stud[x].LN, C->stud[x].FN, C->stud[x].MI, C->stud[x].age, printSex(C->stud[x].z), C->stud[x].dateOfBirth.m, C->stud[x].dateOfBirth.date, C->stud[x].dateOfBirth.year, C->stud[x].acc.email, C->stud[x].acc.password, printAccStatus(C->stud[x].acc.accStat));
+            }
+        }
+        printf("\n\n");
+
+        if(!isTrue)
+        {
+            printf("\n\\t\t No records found! << \n\n");
+        }
+    }   
+}
+
+void filterByAccStatus(Class C, Status accStat)
+{
+    if(isEmptyClass(C))
+    {
+        emptyClassListMsg();
+    }
+    else
+    {   bool isTrue = false;
+        printf("\n***\nFilter by account status: %s\n", printAccStatus(accStat));
+        printf("-----------------------------------------------------------------------------------------------------------------------------------\n");
+        printf("%-15s %-12s %-12s %-5s %-7s %-15s %-15s %-25s %-10s %-15s\n\n", "ID", "LASTNAME", "FIRSTNAME", "M.I.", "AGE", "SEX", "DATE OF BIRTH", "EMAIL", "PASSWORD", "STATUS");
+        int x;
+        for(x=0; x<C->studCount; x++)
+        {
+            if(C->stud[x].acc.accStat==accStat)
+            {
+                isTrue = true;
+                printf("%-15d %-12s %-12s %-5c %-7d %-15s %d/%d/%-10d %-25s %-10s %-15s\n", C->stud[x].ID, C->stud[x].LN, C->stud[x].FN, C->stud[x].MI, C->stud[x].age, printSex(C->stud[x].z), C->stud[x].dateOfBirth.m, C->stud[x].dateOfBirth.date, C->stud[x].dateOfBirth.year, C->stud[x].acc.email, C->stud[x].acc.password, printAccStatus(C->stud[x].acc.accStat));
+            }
+        }
+
+        printf("\n\n");
+
+        if(!isTrue)
+        {
+            printf("\n\t\t\t >> No records found! << \n\n");
+        }
+    }
+}
 void populate(Class C)
 {
     Adviser a1 = {"testFNAdv", "testLNAdv", 'C', 30, F};
@@ -221,6 +283,6 @@ int main()
     populate(&A);
     displayClassList(&A);
     removeStudent(&A, 19103991);
-
+    filterByAccStatus(&A, INACTIVE);
     return 0;
 }
