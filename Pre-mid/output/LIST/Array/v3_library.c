@@ -5,6 +5,7 @@ Date: 01/04/2024
 Program: Library Transactions using ADT List (Array Implementation v3) UNFINISHED
 
 - transactions part not yet done
+- borrowers part not yet done
 -------------------------------------------------------------------------*/
 
 #include<stdio.h>
@@ -14,7 +15,8 @@ Program: Library Transactions using ADT List (Array Implementation v3) UNFINISHE
 
 #define BOOK_BORROW_LIMIT 3
 #define MAX_BOOKS 2 //for testing purposes
-
+#define STUDENT_CAPACITY 5 //for testing purposes
+#define TRANSACTION_CAP 5
 typedef char GENRE;
 typedef char AVAILABILITY;
 typedef char AUTHOR;
@@ -125,8 +127,9 @@ GENRE* bookGenre(GENRE Genre);
 void printBookDetails(Book book);
 bool checkIfBookExists(Library *LIB, int bookId);
 void deleteBook(Library *LIB, int bookId);
+void clearList(Library *LIB);
 
-//filter
+//filter: books
 void filterByGenre(Library *LIB, GENRE Genre);
 void filterByAvailability(Library *LIB, AVAILABILITY Avail);
 void filterByAuthor(Library *LIB, Author author);
@@ -345,6 +348,15 @@ void populateWithBooks(Library *LIB)
 
 }
 
+void clearList(Library *LIB)
+{
+    free(LIB->books);
+    free(LIB->borrowers);
+
+    
+    LIB->books = NULL;
+    LIB->borrowers = NULL;
+}
 
 void initializeLIB(Library *LIB)
 {
@@ -355,6 +367,15 @@ void initializeLIB(Library *LIB)
         printf("\n\nMemory allocation failure\n");
         exit(1);
     }
+
+    LIB->borrowers = (Borrower*)malloc(sizeof(Borrower) * STUDENT_CAPACITY);
+    if(LIB->borrowers==NULL)
+    {
+        printf("\nMemory allocation failure.\n\n");
+        exit(1);
+    }
+
+
 }
 
 int main()
@@ -368,5 +389,7 @@ int main()
     printBooks(testLib);
     filterByAuthor(&testLib, auth);
     filterByAvailability(&testLib, AVAILABLE);
+
+    clearList(&testLib);
     return 0;
 }
