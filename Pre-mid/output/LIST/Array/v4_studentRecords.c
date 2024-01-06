@@ -5,10 +5,10 @@ Program: Making a simple student records program using ADT LIST Array v4 imp.
 
 Functions to be added:
 * filter 
-    -> by sex
-    -> by course
-    -> by year
-    -> by AccStat
+    -> by sex /
+    -> by course /
+    -> by year /
+    -> by AccStat /
 ==============================================================================*/
 
 #include<stdio.h>
@@ -101,6 +101,10 @@ ACCSTAT printAccStat(AccountStat accStat);
 void clearList(Department *Dpt);
 
 //filter functions
+void filterBySex(Department Dpt, Sex sx);
+void filterByCourse(Department Dpt, Course c);
+void filterByYear(Department Dpt, int year);
+void filterByAccStat(Department Dpt, AccountStat accStat);
 
 SEX printSex(Sex sx)
 {
@@ -214,15 +218,15 @@ void printStudents(Department Dpt)
     }
     else
     {
-        printf("\n=============================================================================\n");
-        printf("%-10s %-10s %-10s %-5s %-5s %-15s %-15s", "NAME", "LASTNAME", "FIRSTNAME", "M.I.", "YEAR", "AGE", "COURSE");
-        printf("\n----------------------------------------------------------------------------\n");
+        printf("\n=======================================================================================================\n");
+        printf("%-10s %-10s %-10s %-5s %-10s %-5s %-15s %-15s", "ID", "LASTNAME", "FIRSTNAME", "M.I.", "SEX", "YEAR", "AGE", "COURSE");
+        printf("\n-------------------------------------------------------------------------------------------------------\n");
         int x;
         for(x=0; x<Dpt->studCount; x++)
         {
-            printf("%-10d %-10s %-10s %-5c %-5d %-5d %-15s\n", Dpt->Stud[x].id, Dpt->Stud[x].LN, Dpt->Stud[x].FN, Dpt->Stud[x].MI, Dpt->Stud[x].year, Dpt->Stud[x].age, printCourse(Dpt->Stud[x].studCourse));
+            printf("%-10d %-10s %-10s %-5c %-10s %-5d %-5d %-15s\n", Dpt->Stud[x].id, Dpt->Stud[x].LN, Dpt->Stud[x].FN, Dpt->Stud[x].MI, printSex(Dpt->Stud[x].sx), Dpt->Stud[x].year, Dpt->Stud[x].age, printCourse(Dpt->Stud[x].studCourse));
         }
-        printf("=============================================================================\n\n");
+        printf("==========================================================================================================\n\n");
     }
 }
 
@@ -291,6 +295,130 @@ void emptyListMsg()
     printf("\n\n\t >> Student Records is Emtpy! <<");
 }
 
+void filterBySex(Department Dpt, Sex sx)
+{
+    if(isEmpty(Dpt))
+    {
+        emptyListMsg();
+    }
+    else
+    {
+        bool isFound = false;
+        int x;
+        printf("\n**********************\nFilter by Sex: %s\n", printSex(sx));
+        printf("\n=============================================================================================\n");
+        printf("%-10s %-10s %-10s %-5s %-10s %-5s %-15s %-15s", "ID", "LASTNAME", "FIRSTNAME", "M.I.", "SEX", "YEAR", "AGE", "COURSE");
+        printf("\n---------------------------------------------------------------------------------------------\n");
+        for(x=0; x<Dpt->studCount; x++)
+        {
+            if(Dpt->Stud[x].sx==sx)
+            {
+                isFound = true;
+                printf("%-10d %-10s %-10s %-5c %-10s %-5d %-5d %-15s\n", Dpt->Stud[x].id, Dpt->Stud[x].LN, Dpt->Stud[x].FN, Dpt->Stud[x].MI, printSex(Dpt->Stud[x].sx), Dpt->Stud[x].year, Dpt->Stud[x].age, printCourse(Dpt->Stud[x].studCourse));
+            }
+        }
+        printf("===============================================================================================\n\n");
+
+        if(!isFound)
+        {
+            printf("\n\t>> No records found! <<\n\n");
+        }
+    }
+}
+
+void filterByYear(Department Dpt, int year)
+{
+    if(isEmpty(Dpt))
+    {
+        emptyListMsg();
+    }
+    else
+    {
+        bool isFound = false;
+        int x;
+        printf("\n*************************************\nFilter by Year: %d\n", year);
+        printf("\n========================================================================================\n");
+        printf("%-10s %-10s %-10s %-5s %-10s %-5s %-15s %-15s", "ID", "LASTNAME", "FIRSTNAME", "M.I.", "SEX", "YEAR", "AGE", "COURSE");
+        printf("\n---------------------------------------------------------------------------------------\n");
+        for(x=0; x<Dpt->studCount; x++)
+        {
+            if(Dpt->Stud[x].year==year)
+            {
+                isFound = true;
+                printf("%-10d %-10s %-10s %-5c %-10s %-5d %-5d %-15s\n", Dpt->Stud[x].id, Dpt->Stud[x].LN, Dpt->Stud[x].FN, Dpt->Stud[x].MI, printSex(Dpt->Stud[x].sx), Dpt->Stud[x].year, Dpt->Stud[x].age, printCourse(Dpt->Stud[x].studCourse));
+            }
+        }
+        printf("==========================================================================================\n\n");
+        
+        if(!isFound)
+        {
+            printf("\n\t>> No records found! <<\n\n");
+        }
+    }
+}
+
+void filterByAccStat(Department Dpt, AccountStat accStat)
+{
+    if(isEmpty(Dpt))
+    {
+        emptyListMsg();
+    }
+    else
+    {
+        bool isFound = false;
+        int x;
+        printf("\n**********************************************\nFilter by Account Status: %s\n", printAccStat(accStat));
+        printf("\n=======================================================================================================================================\n");
+        printf("%-10s %-10s %-10s %-5s %-10s %-5s %-15s %-25s %-25s %-15s", "ID", "LASTNAME", "FIRSTNAME", "M.I.", "SEX", "YEAR", "AGE", "COURSE", "EMAIL", "STATUS");
+        printf("\n---------------------------------------------------------------------------------------------------------------------------------------\n");
+        for(x=0; x<Dpt->studCount; x++)
+        {
+            if(Dpt->Stud[x].acc.accStat == accStat)
+            {
+                isFound = true;
+                printf("%-10d %-10s %-10s %-5c %-10s %-5d %-5d %-30s %-30s %-15s\n", Dpt->Stud[x].id, Dpt->Stud[x].LN, Dpt->Stud[x].FN, Dpt->Stud[x].MI, printSex(Dpt->Stud[x].sx), Dpt->Stud[x].year, Dpt->Stud[x].age, printCourse(Dpt->Stud[x].studCourse), Dpt->Stud[x].acc.email, printAccStat(Dpt->Stud[x].acc.accStat));
+            }
+        }
+        printf("==========================================================================================================================================\n\n");
+
+        if(!isFound)
+        {
+            printf("\n\t>> No records found! <<\n\n");
+        }
+    }
+}
+
+void filterByCourse(Department Dpt, Course c)
+{
+    if(isEmpty(Dpt))
+    {
+        emptyListMsg();
+    }
+    else
+    {
+        bool isFound = false;
+        printf("\n*******************************************\nFilter by Course: %s\n", printCourse(c));
+        printf("\n===============================================================================================\n");
+        printf("%-10s %-10s %-10s %-5s %-5s %-15s %-15s", "NAME", "LASTNAME", "FIRSTNAME", "M.I.", "YEAR", "AGE", "COURSE");
+        printf("\n-----------------------------------------------------------------------------------------------\n");
+        int x;
+        for(x=0; x<Dpt->studCount; x++)
+        {
+            if(c == Dpt->Stud[x].studCourse)
+            {
+                isFound = true;
+                printf("%-10d %-10s %-10s %-5c %-5d %-5d %-15s\n", Dpt->Stud[x].id, Dpt->Stud[x].LN, Dpt->Stud[x].FN, Dpt->Stud[x].MI, Dpt->Stud[x].year, Dpt->Stud[x].age, printCourse(Dpt->Stud[x].studCourse));
+            }
+        }
+        printf("==============================================================================================\n\n");
+
+        if(!isFound)
+        {
+            printf("\n\t>> No records found! <<\n\n");
+        }
+    }
+}
+
 void populate(Department *Dpt)
 {
     studType stud1 = {19103991, "Shannen", "Nazareno", 'T', 3, 21, F, {SEPTEMBER, 26, 2002}, BSIS, {"nzrnshannen@gmail.com", "shannenPass", ACTIVE}};
@@ -319,8 +447,13 @@ int main()
     // deleteStudent(&sas, 19103991);
     // deleteStudent(&sas, 123456789);
     printStudents(sas);
-    deleteStudent(&sas, 19103991);
+    //deleteStudent(&sas, 19103991);
     printStudents(sas);
+
+    filterByAccStat(sas, ACTIVE);
+    filterByCourse(sas, BSIT);
+    filterBySex(sas, F);
+    filterByYear(sas, 4);
     clearList(&sas);
     return 0;
 }
