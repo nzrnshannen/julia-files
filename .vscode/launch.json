@@ -8,8 +8,8 @@
       "args": [],
       "stopAtEntry": false,
       "externalConsole": true,
-      "cwd": "c:/Users/heyst/OneDrive/Desktop/DSA/Pre-mid/output/LIST/Array",
-      "program": "c:/Users/heyst/OneDrive/Desktop/DSA/Pre-mid/output/LIST/Array/build/Debug/outDebug",
+      "cwd": "c:/Users/heyst/OneDrive/Desktop/DSA/Pre-mid/output/LIST/Cursor-based",
+      "program": "c:/Users/heyst/OneDrive/Desktop/DSA/Pre-mid/output/LIST/Cursor-based/build/Debug/outDebug",
       "MIMode": "gdb",
       "miDebuggerPath": "gdb",
       "setupCommands": [
