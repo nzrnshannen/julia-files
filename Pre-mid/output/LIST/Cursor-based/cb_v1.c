@@ -83,13 +83,12 @@ void insertAtEnd(char elem, LIST *L, VirtualHeap *VH)
         else
         {
             int x;
-            for(x=0; VH->Nodes[x].link!=-1; x=VH->Nodes[x].link){}
+            for(x=*L; VH->Nodes[x].link!=-1; x=VH->Nodes[x].link){}
 
             VH->Nodes[ndx].link = -1;
             VH->Nodes[x].link = ndx;
         }
 
-        
     }
     else
     {
