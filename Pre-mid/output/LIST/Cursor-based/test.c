@@ -1,93 +1,48 @@
 #include<stdio.h>
-#include<stdbool.h>
+#include<stdlib.h>
+#include<string.h>
 
-#define SIZE 5
-
-typedef struct{
-    char elem;
-    int link;
-}nodeType;
-
-typedef struct{
-    nodeType Nodes[SIZE];
-    int avail;
-}VirtualHeap;
-
-typedef int CLIST;
-
-int allocSpace(VirtualHeap *VH)
+int* getAllNegative(int size, int Arr[])
 {
-    int retval = VH->avail;
-    if(retval!=-1)
+    int x, y = 1;
+    int temp[size+1];
+
+    for(x=0; x<size; x++)
     {
-        VH->avail = VH->Nodes[retval].link;
-    }
-
-    return retval;
-}
-
-void initVirtualHeap(VirtualHeap *VH)
-{
-    VH->avail = SIZE-1;
-    int x;
-    for(x=VH->avail; x>=0; x--)
-    {
-        VH->Nodes[x].link = x-1;
-    }
-}
-
-void initCList(CLIST *C)
-{
-    *C = -1;
-}
-
-void addElem(CLIST *C, VirtualHeap *VH, char elem)
-{
-    int ndx = allocSpace(VH);
-    if(ndx!=-1)
-    {
-        VH->Nodes[ndx].elem = elem;
-        VH->Nodes[ndx].link= -1;
-
-        if(*C==-1)
+        if(Arr[x] < 0)
         {
-            *C = ndx;
+            temp[y] = Arr[x];
+            y++;
         }
-        else
-        {
-            int x;
-            for(x=*C; VH->Nodes[x].link!=-1; x=VH->Nodes[x].link){}
 
-            VH->Nodes[x].link = ndx;
-        }
     }
+
+    temp[0] = y-1;
+
+    int *new = (int*)malloc(sizeof(int) * y);
+    if(new!=NULL)
+    {
+        memcpy(new, temp, y * sizeof(int));
+    }
+
+    return new;
 }
 
-void displayList(CLIST C, VirtualHeap VH)
+void display(int Arr[], int size)
 {
-    printf("\n====\nList: ");
     int x;
-    for(x=C; x!=-1; x=VH.Nodes[x].link)
-    {
-        printf("%c ", VH.Nodes[x].elem);
-    }
-    printf("\n");
+    printf("\n====\n");
+    for(x=0; x<size; x++)
+        printf("%d ", Arr[x]);
+    
+    printf("\n\n");
 }
 
 int main()
 {
-    VirtualHeap Vheap;
-    CLIST C;
+    int A[] = {2, 1, 3, 4};
+    int size = sizeof(A)/sizeof(A[0]);
+    int *B = getAllNegative(size, A);
+    display(B, B[0]+1);
 
-    initCList(&C);
-    initVirtualHeap(&Vheap);
-    addElem(&C, &Vheap, 'A');
-    addElem(&C, &Vheap, 'B');
-    addElem(&C, &Vheap, 'C');
-    addElem(&C, &Vheap, 'A');
-    addElem(&C, &Vheap, 'A');
-
-    addElem(&C, &Vheap, 'F');
-    displayList(C, Vheap);
-    return 0;
 }
