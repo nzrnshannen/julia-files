@@ -45,7 +45,7 @@ int top(STACK S)
 
 bool isFull(STACK S)
 {
-    return (S.top==SIZE-1) ? true : false;
+    return (S.top==SIZE-1) ? true : false; //S.top!= -1
 }
 
 bool isEmpty(STACK S)
