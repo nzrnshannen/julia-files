@@ -59,7 +59,7 @@ void printStack(STACK S)
     initStack(&tempStack);
 
     printf("\n=====\nSTACK: ");
-    while(!isEmpty(S))
+    while(!isEmpty(S)) 
     {
         push(&tempStack, top(S));
         pop(&S);

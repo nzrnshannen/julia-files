@@ -76,6 +76,9 @@ void printStack(STACK S)
     }
 }
 
+void deleteFirstOccur(STACK *S)
+{
+}
 
 int main()
 {
