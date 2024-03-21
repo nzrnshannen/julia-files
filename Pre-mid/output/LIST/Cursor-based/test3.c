@@ -1,134 +1,109 @@
-#include<stdio.h>
-#define SIZE 3
+#define MAX 4
+#include <stdio.h>
+#include <stdlib.h>
+
+typedef struct cell{
+	char elem;
+	struct cell* next;
+}*node;
 
 typedef struct{
-    int data;
-    int link;
-}nodeType;
+	node front;
+	node rear;
+}Queue;
 
-typedef struct{
-    nodeType Node[SIZE];
-    nodeType Node[SIZE+1];
-    int avail;
-}VirtualHeap;
+void initQueue(Queue *Q);
+int isFull(Queue Q);
+int isEmpty(Queue Q);
+void enqueue(Queue *Q, char ch);
+void dequeue(Queue *Q);
+char front(Queue Q);
 
+/*custom functions to be done using queue function calls*/
+void displayQueue(Queue *Q);
 
-
-typedef int CLIST;
-
-void initCList(CLIST *C);
-void initVHeap(VirtualHeap *VH);
-int allocSpace(VirtualHeap *VH);
-void deallocSpace(VirtualHeap *VH, int ndx);
-void insertElem(CLIST *C, VirtualHeap *VH, int data); //acts as insertAtEnd
-void populate(CLIST *C, VirtualHeap *VH);
-
-
-void initCList(CLIST *C)
-{
-    *C = -1;
+int main(){
+	Queue A;
+	initQueue(&A);
+	
+	enqueue(&A,'a');
+	enqueue(&A,'b');
+	enqueue(&A,'c');
+	enqueue(&A,'d'); //should not be accepted
+	displayQueue(&A);	
+	displayQueue(&A);
+	dequeue(&A);
+	displayQueue(&A);
+	displayQueue(&A);
+	displayQueue(&A);
 }
 
-
-void initVHeap(VirtualHeap *VH) //version 2
-{
-    VH->avail = SIZE-1; // 0 1 2 
-    int x;
-    for(x=VH->avail; x>=0; x--) 
-    {
-        VH->Node[x].link = x-1;
-    }
+void initQueue(Queue *Q){
+	Q->front=NULL;
+	Q->rear=NULL;	
 }
 
-
-
-void insertElem(CLIST *C, VirtualHeap *VH, int data) //insert at end
-{
-    int ndx = allocSpace(VH);
-    if(ndx!=-1)
-    {
-        VH->Node[ndx].data = data;
-
-        if(*C==-1)
-        {
-            *C = ndx;
-        }
-        else
-        {
-            int x;
-            for(x=*C; VH->Node[x].link!=-1; x=VH->Node[x].link){} //x = -1
-
-            VH->Node[x].link = ndx;
-        }
-
-        VH->Node[ndx].link = -1;
-    }
+int isFull(Queue Q){
+	return 0;	
 }
 
-void displayList(CLIST C, VirtualHeap VH)
-{
-    int x;
-    printf("\n===\nList: ");
-    for(x=C; x!=-1; x=VH.Node[x].link)
-    {
-        printf("%d ", VH.Node[x].data);
-    }
-
-    printf("\n\n");
+int isEmpty(Queue Q){
+	return (Q.front == NULL) ? 1 : 0;	
 }
 
-
-int allocSpace(VirtualHeap *VH)
-{
-    int retval = VH->avail;
-    if(retval!=-1)
-    {
-        VH->avail = VH->Node[retval].link;
-    }
-
-    return retval;
-}
-void populate(CLIST *C, VirtualHeap *VH)
-{
-    insertElem(C, VH, -3);
-    insertElem(C, VH, -2);
-    insertElem(C, VH, 1);
-}   
-
-void getAllNegatives(CLIST C, VirtualHeap VHeap)
-{
-    CLIST tempC;
-    VirtualHeap tempVH;
-    initCList(&tempC);
-    initVHeap(&tempVH);
-
-
-    int x;
-    // int tempCount = 0;
-    //x = 2
-    for(x=C; x!=-1; x=VHeap.Node[x].link)
-    {
-        if(VHeap.Node[x].data < 0)
-        {
-            insertElem(&tempC, &tempVH, VHeap.Node[x].data);
-        }
-    }
-
-    displayList(tempC, tempVH);
-    
+void enqueue(Queue *Q, char ch){
+	node temp;
+	
+	temp = (node)malloc(sizeof(struct cell));
+	if(temp!=NULL){
+		temp->elem = ch;
+		temp->next = NULL;
+		if(Q->front == NULL){
+			//element is the first element
+			Q->front = Q->rear = temp;
+		} else {
+			Q->rear = Q->rear->next = temp; 
+		}
+	}	
 }
 
-int main()
-{
-    CLIST C;
-    VirtualHeap VHeap;
+void dequeue(Queue *Q){
+	node temp;
+	
+	if(Q->front != NULL){
+		temp = Q->front;
+		Q->front = temp->next;
+		free(temp);
+		if(Q->front == NULL){
+			//element is the only remaining
+			Q->rear = NULL;
+		}
+	}
+}
 
-    initCList(&C);
-    initVHeap(&VHeap);
+char front(Queue Q){
+	if(isEmpty(Q) == 0){
+		return Q.front->elem;
+	}
+}
 
-    populate(&C, &VHeap);
-
-    displayList(C, VHeap);
-    getAllNegatives(C, VHeap);
-    return 0;
+void displayQueue(Queue *Q){
+	Queue temp;
+	char ch;
+	
+	initQueue(&temp);
+	while(isEmpty(*Q) == 0){
+		ch = front(*Q);
+		printf("%c",ch);
+		dequeue(Q);
+		enqueue(&temp,ch);
+	}
+	printf("\n");
+	
+	while(isEmpty(temp) == 0){
+		ch = front(temp);
+		dequeue(&temp);
+		enqueue(Q,ch);
+	}	
+	
 }

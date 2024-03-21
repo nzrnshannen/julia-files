@@ -8,7 +8,7 @@ typedef struct node{
 }nodeType, *Qnode;
 
 typedef struct{
-    Qnode front;
+    Qnode front; 
     Qnode rear;
 }Queue;
 
@@ -16,7 +16,7 @@ void initQueue(Queue *Q);
 void Enqueue(Queue *Q, int elem);
 void Dequeue(Queue *Q);
 int Front(Queue Q);
-void Display(Queue Q);
+void Display(Queue *Q);
 void Populate(Queue *Q);
 
 void initQueue(Queue *Q)
@@ -37,12 +37,10 @@ void Enqueue(Queue *Q, int elem)
         if(Q->front == NULL)
         {
             Q->front = newNode;
-            //Q->rear = newNode;
         }
         else
         {
             Q->rear->next = newNode;
-            //Q->rear = newNode;
         }
 
         Q->rear = newNode;
@@ -75,31 +73,29 @@ int Front(Queue Q)
     return (Q.front!=NULL) ? Q.front->elem : -9999999;
 }
 
-void Display(Queue Q)
+void Display(Queue *Q)
 {
-    if(Q.front!=NULL)
+    Queue tempQueue;
+    initQueue(&tempQueue);
+
+    printf("\n===\nQueue: ");
+    while(Q->front!=NULL)
     {
-        Queue tempQueue;
-        initQueue(&tempQueue);
-
-        printf("\n===\nQueue: ");
-        while(Q.front!=NULL)
-        {
-            int data = Front(Q);
-            Enqueue(&tempQueue, data);
-            Dequeue(&Q);
-        }
-
-        while(tempQueue.front!=NULL)
-        {
-            int data = Front(tempQueue);
-            printf("%d ", data);
-            Enqueue(&Q, data);
-            Dequeue(&tempQueue);
-        }
-
-        printf("\n\n");
+        int data = Front(*Q);
+        printf("%d ", data);
+        Dequeue(Q);
+        Enqueue(&tempQueue, data);
     }
+
+    while(tempQueue.front!=NULL)
+    {
+        int data = Front(tempQueue);
+        Dequeue(&tempQueue);
+        Enqueue(Q, data);
+    }
+
+    printf("\n\n");
+    
 }
 
 void Populate(Queue *Q)
@@ -116,6 +112,13 @@ int main()
     Queue myQueue;
     initQueue(&myQueue);
     Populate(&myQueue);
-    Display(myQueue);
+
+    Display(&myQueue);
+
+    Dequeue(&myQueue);
+    Display(&myQueue);
+
+    Display(&myQueue);
+    Display(&myQueue);  
     return 0;
 }

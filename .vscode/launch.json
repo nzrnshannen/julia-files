@@ -8,8 +8,8 @@
       "args": [],
       "stopAtEntry": false,
       "externalConsole": true,
-      "cwd": "c:/Users/heyst/OneDrive/Desktop/DSA/Pre-mid/output/QUEUES/Array",
-      "program": "c:/Users/heyst/OneDrive/Desktop/DSA/Pre-mid/output/QUEUES/Array/build/Debug/outDebug",
+      "cwd": "c:/Users/heyst/OneDrive/Desktop/DSA",
+      "program": "c:/Users/heyst/OneDrive/Desktop/DSA/build/Debug/outDebug",
       "MIMode": "gdb",
       "miDebuggerPath": "gdb",
       "setupCommands": [
