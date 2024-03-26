@@ -46,3 +46,5 @@
 # true = 1, false = 0
 false + true + true 
 (true + true + true)^false
+
+1 + 5
